@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ValidadorMail Pro — Playground &amp; Demonstração</title>
+  <title>ValidadorMail Pro ? Documenta??o Oficial &amp; Teste de API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -12,7 +12,6 @@
       --bg: #090d16;
       --card: #111827;
       --accent: #10b981;
-      --accent-glow: rgba(16, 185, 129, 0.25);
       --text: #f9fafb;
       --text-muted: #94a3b8;
       --border: rgba(255,255,255,0.08);
@@ -44,8 +43,8 @@
       font-weight: 700;
       margin-bottom: 16px;
     }
-    h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
-    p.lead { color: var(--text-muted); font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+    h1 { font-size: 30px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+    p.lead { color: var(--text-muted); font-size: 14.5px; margin-bottom: 24px; line-height: 1.6; }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -54,15 +53,28 @@
       margin-bottom: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
-    .input-group { display: flex; gap: 12px; margin-bottom: 16px; }
+    .notice-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px dashed rgba(245, 158, 11, 0.35);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .input-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .input-group { display: flex; gap: 10px; }
     input {
       flex: 1;
       background: #040711;
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 14px 18px;
+      padding: 12px 16px;
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
       font-family: 'JetBrains Mono', monospace;
       outline: none;
       transition: border-color 0.2s;
@@ -74,101 +86,86 @@
       font-weight: 700;
       border: none;
       border-radius: 10px;
-      padding: 0 24px;
+      padding: 0 20px;
       font-size: 14px;
       cursor: pointer;
-      transition: transform 0.1s, opacity 0.2s;
+      transition: opacity 0.2s;
     }
     button:hover { opacity: 0.9; }
-    button:active { transform: scale(0.98); }
-    .quick-examples {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .quick-btn {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .quick-btn:hover { color: #fff; border-color: var(--accent); }
     .output-box {
       background: #040711;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 18px;
+      padding: 16px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       color: #38bdf8;
-      max-height: 420px;
+      max-height: 380px;
       overflow-y: auto;
       white-space: pre-wrap;
       line-height: 1.5;
     }
     footer {
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 12.5px;
       margin-top: 20px;
       text-align: center;
+      line-height: 1.6;
     }
     footer a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="badge">🛡️ RFC 5322 &bull; DNS MX 1.1.1.1 &bull; 10k Descartáveis &bull; Edge &lt;15ms</div>
-    <h1>ValidadorMail Pro</h1>
-    <p class="lead">Auditoria profunda de e-mails em tempo real: checagem de servidores MX no DNS Anycast da Cloudflare, bloqueio de 10.180+ domínios descartáveis e detecção de e-mails trolls e zombeteiros.</p>
+    <div class="badge">?? Gateway Oficial &bull; Protegido por Chave de API</div>
+    <h1>ValidadorMail Pro ? Documenta??o da API</h1>
+    <p class="lead">Auditoria profunda de e-mails em tempo real: checagem de servidores MX no DNS Anycast 1.1.1.1, detec??o de 10.180+ dom?nios descart?veis e detec??o de e-mails trolls. O acesso aos endpoints na nuvem ? comercializado e controlado atrav?s do nosso <strong>Site de APIs</strong>.</p>
 
     <div class="card">
-      <div class="quick-examples">
-        <button class="quick-btn" onclick="testar('contato@google.com')">🟢 Corporativo (Google)</button>
-        <button class="quick-btn" onclick="testar('joao.silva@gmail.com')">🟢 Gmail Real</button>
-        <button class="quick-btn" onclick="testar('suamaeaquelaursa@gmail.com')" style="color:var(--error)">🔴 Troll / Fake</button>
-        <button class="quick-btn" onclick="testar('pedro@yopmail.com')" style="color:var(--warning)">🟠 Descartável (Yopmail)</button>
-        <button class="quick-btn" onclick="testar('marcos@gmai.com')" style="color:#38bdf8">🟡 Erro de Digitação (@gmai.com)</button>
-        <button class="quick-btn" onclick="testar('teste@naoexiste99881122.com')" style="color:var(--error)">❌ Inexistente (NXDOMAIN)</button>
+      <div class="notice-box">
+        <span>??</span>
+        <div><strong>Acesso Restrito:</strong> Requisi??es diretas a esta API exigem uma Chave de API v?lida no header <code>x-api-key</code>.</div>
       </div>
 
-      <div class="input-group">
-        <input type="text" id="emailInput" placeholder="Digite o e-mail para auditar..." value="suamaeaquelaursa@gmail.com">
-        <button onclick="validar()">Validar Agora</button>
+      <div class="input-row">
+        <div>
+          <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px">Chave de API do Portal (x-api-key):</label>
+          <input type="password" id="apiKeyInput" placeholder="Insira sua Chave de API emitida pelo Site de APIs (ou teste no portal)" value="">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px">Endere?o de E-mail:</label>
+          <div class="input-group">
+            <input type="text" id="emailInput" placeholder="ex: contato@google.com ou suamaeaquelaursa@gmail.com" value="contato@google.com">
+            <button onclick="validar()">Auditar E-mail</button>
+          </div>
+        </div>
       </div>
 
-      <div class="output-box" id="resultOutput">Pronto para auditar. Digite um e-mail ou clique nos exemplos acima.</div>
+      <div class="output-box" id="resultOutput">Informe sua Chave de API e clique em "Auditar E-mail" para enviar requisi??o autorizada.</div>
     </div>
 
     <footer>
-      Código aberto no <a href="https://github.com/clepta2/validadormail-pro" target="_blank">GitHub (clepta2/validadormail-pro)</a>
+      Documenta??o T?cnica &bull; <a href="https://github.com/clepta2/validadormail-pro" target="_blank">Reposit?rio GitHub (clepta2/validadormail-pro)</a><br>
+      Todos os direitos reservados &bull; Disponibilizado via Portal Oficial de APIs.
     </footer>
   </div>
 
   <script>
     async function validar() {
+      const apiKey = document.getElementById('apiKeyInput').value.trim();
       const val = document.getElementById('emailInput').value.trim();
       const out = document.getElementById('resultOutput');
-      out.innerText = 'Consultando servidores MX e blocklists na borda da Cloudflare...';
+      out.innerText = 'Enviando requisi??o autenticada ao Gateway...';
       try {
-        const res = await fetch('/api/validar-email?email=' + encodeURIComponent(val));
+        const headers = {};
+        if (apiKey) headers['x-api-key'] = apiKey;
+        const res = await fetch('/api/validar-email?email=' + encodeURIComponent(val), { headers });
         const data = await res.json();
         out.innerText = JSON.stringify(data, null, 2);
       } catch (e) {
-        out.innerText = 'Erro: ' + e.message;
+        out.innerText = 'Erro na comunica??o: ' + e.message;
       }
     }
-
-    function testar(email) {
-      document.getElementById('emailInput').value = email;
-      validar();
-    }
-
-    validar();
   </script>
 </body>
 </html>

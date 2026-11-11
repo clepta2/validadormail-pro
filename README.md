@@ -1,11 +1,25 @@
 # 🛡️ ValidadorMail Pro
 
-> **SDK & API Oficial de Auditoria Profunda de E-mails.**  
-> Validação RFC 5322, consulta MX em tempo real via Cloudflare DoH (1.1.1.1 Anycast), detecção de mais de **10.180 provedores descartáveis** (Yopmail, TempMail) e detecção de e-mails **trolls e zombeteiros** (ex: `suamaeaquelaursa`).
+> **Documentação Oficial da API & SDK de Auditoria Profunda de E-mails.**  
+> 🔒 **Atenção:** Este repositório destina-se exclusivamente à visualização de documentação técnica e integração do cliente SDK. O serviço de API em nuvem é operado através do nosso **Site de APIs (em breve)**. O acesso aos endpoints na borda requer obrigatoriamente uma **Chave de API (`x-api-key`)** ativa.
 
-[![npm version](https://img.shields.io/npm/v/validadormail-pro.svg)](https://www.npmjs.com/package/validadormail-pro)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Edge Ready](https://img.shields.io/badge/Edge-Cloudflare%20Workers-orange.svg)](https://workers.cloudflare.com/)
+[![Status](https://img.shields.io/badge/Status-Cloudflare%20Edge%20API-success.svg)](#)
+[![Padrão](https://img.shields.io/badge/Padrão-RFC%205322%20%26%20DNS%20MX-blue.svg)](#)
+[![Autenticação](https://img.shields.io/badge/Autenticação-x--api--key%20Obrigatória-orange.svg)](#)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietária%20%2F%20Portal%20de%20APIs-red.svg)](LICENSE)
+
+---
+
+## 🔒 Acesso à API e Chaves
+
+Para consumir esta API nos seus sistemas, cadastre-se no nosso **Site de APIs** para obter sua chave de acesso (`x-api-key`).
+
+Todas as requisições aos endpoints em nuvem devem incluir a chave no cabeçalho:
+```http
+GET /api/validar-email?email=contato@google.com HTTP/1.1
+Host: validadormail-pro-api.clepta3.workers.dev
+x-api-key: SUA_CHAVE_DO_PORTAL
+```
 
 ---
 
@@ -17,7 +31,7 @@ npm install validadormail-pro
 
 ---
 
-## ⚡ Uso Rápido (SDK em JavaScript / TypeScript)
+## ⚡ Uso com o SDK Oficial
 
 ```javascript
 import { ValidadorMailPro } from 'validadormail-pro';
@@ -41,12 +55,18 @@ console.log(resCompleto.servidoresMx);   // ["smtp.google.com"]
 
 ---
 
-## 🌐 Endpoint Público Anycast Edge
+## 🌐 Endpoint Anycast Edge (Requer x-api-key)
 
 * **Endpoint Cloudflare:** `GET https://validadormail-pro-api.clepta3.workers.dev/api/validar-email?email=...`
 * **Cluster:** Cloudflare Anycast (`clepta3.workers.dev`)
+* **Autenticação:** Header `x-api-key` ou `Authorization: Bearer <key>`
 * **Latência:** `<15ms`
-* **Formatos Aceitos:** `GET` ou `POST` (JSON)
+
+### Exemplo via cURL:
+```bash
+curl -X GET "https://validadormail-pro-api.clepta3.workers.dev/api/validar-email?email=contato@google.com" \
+  -H "x-api-key: SUA_CHAVE_DO_PORTAL"
+```
 
 ### Exemplo via cURL:
 ```bash
