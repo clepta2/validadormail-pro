@@ -7,4 +7,4 @@ workers_dev = true
 SERVICE_NAME = "ValidadorMail Pro API"
 ENVIRONMENT = "production"
 GITHUB_REPO = "clepta2/validadormail-pro"
-DOCS_URL = "https://ponte.ozpro.com.br"
+DOCS_URL = "https://github.com/clepta2/validadormail-pro"
