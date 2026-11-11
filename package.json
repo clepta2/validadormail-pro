@@ -1,0 +1,36 @@
+{
+  "name": "validadormail-pro",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SDK e API Oficial de Auditoria Profunda de E-mails: Validação RFC 5322, DNS MX em tempo real (Cloudflare DoH 1.1.1.1), detecção de 10.180+ domínios descartáveis e detecção de e-mails trolls e fakes na borda Anycast (<15ms).",
+  "main": "validadormail-pro.js",
+  "module": "validadormail-pro.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "test": "node test.js",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": [
+    "email",
+    "email-validator",
+    "validador-email",
+    "disposable-email",
+    "anti-troll",
+    "mx-lookup",
+    "cloudflare-worker",
+    "edge-computing",
+    "rfc5322",
+    "brasil",
+    "sdk"
+  ],
+  "author": "clepta2 <clepta2@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clepta2/validadormail-pro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clepta2/validadormail-pro/issues"
+  },
+  "homepage": "https://github.com/clepta2/validadormail-pro#readme"
+}
