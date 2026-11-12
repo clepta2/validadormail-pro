@@ -72,7 +72,22 @@ curl -X GET "https://validadormail-pro-api.clepta3.workers.dev/api/validar-email
 ### Exemplo via cURL:
 ```bash
 curl -X GET "https://validadormail-pro-api.clepta3.workers.dev/api/validar-email?email=suamaeaquelaursa@gmail.com"
+
+# Validação em lote (Batch) — até 50 e-mails Pro ou 5 gratuitos
+curl -X POST "https://validadormail-pro-api.clepta3.workers.dev/api/email/lote" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: SUA_CHAVE_DO_PORTAL" \
+  -d '{"emails": ["contato@google.com", "financeiro@empresa.com.br", "teste@tempmail.com"]}'
 ```
+
+---
+
+## 🛡️ Rate Limiting & Proteção de Cotas
+
+- **Plano Gratuito:** até 60 req/min por isolate de borda.
+- **Plano Pro / Enterprise (`x-api-key`):** até 300 req/min.
+- Para higienização de bases e formulários massivos, utilize a rota de lote (`/api/email/lote`) para processar até 50 e-mails por chamada.
+- O contador em memória do Worker é local por isolate e não representa uma cota diária global centralizada.
 
 ### Exemplo de Resposta JSON:
 ```json

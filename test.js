@@ -38,6 +38,33 @@ async function runTests() {
   }
 
   console.log(`Todos os ${passed} testes executados com sucesso!`);
+
+  // Testes de Lote do Worker
+  console.log('\n--- Teste de Validação em Lote (Worker) ---');
+  const { default: worker } = await import('./worker.js');
+  const resLote = await worker.fetch(new Request('https://api.test/api/email/lote', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ emails: ['contato@google.com', 'invalido@@email', 'suamaeaquelaursa@tempmail.com'] })
+  }), {});
+  const bodyLote = await resLote.json();
+  console.assert(resLote.status === 200, 'Status do lote deve ser 200');
+  console.assert(bodyLote.totalSolicitado === 3, 'Deve processar 3 e-mails');
+  console.assert(bodyLote.totalValidos === 1, '1 e-mail válido');
+  console.assert(bodyLote.totalInvalidos === 2, '2 e-mails inválidos ou de descarte');
+  console.log('✅ Rota de lote de e-mails processou corretamente a rodada');
+
+  const resExcesso = await worker.fetch(new Request('https://api.test/api/email/lote', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ emails: Array(6).fill('teste@exemplo.com') })
+  }), {});
+  console.assert(resExcesso.status === 413, 'Excesso gratuito deve retornar 413');
+  console.log('✅ Limite de tamanho de lote gratuito respeitado (413)');
+
+  const resMetodo = await worker.fetch(new Request('https://api.test/api/email/lote'), {});
+  console.assert(resMetodo.status === 405, 'GET em /api/email/lote deve retornar 405');
+  console.log('✅ Método incorreto rejeitado');
 }
 
 runTests().catch(console.error);

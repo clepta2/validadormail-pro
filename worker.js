@@ -4,7 +4,7 @@
  * Auditoria profunda de e-mails em tempo real: sintaxe RFC 5322, consulta DNS MX (1.1.1.1),
  * detecção de 10.180+ domínios descartáveis e anti-troll.
  *
- * Rate Limiter Ativo: 1 req/s para Free (60 req/min = 86.400 req/dia máx) | 300 req/min para Pro
+ * Rate limiter local por isolate; não define cota diária global. Lotes reduzem chamadas.
  *
  * @license MIT
  * @see https://github.com/clepta2/validadormail-pro
@@ -61,6 +61,13 @@ export default {
       });
     }
 
+    let bodyJson = null;
+    if (request.method === 'POST') {
+      try {
+        bodyJson = await request.json();
+      } catch (_) {}
+    }
+
     // 3. Autenticação & Rate Limiting
     const apiKey = request.headers.get('x-api-key') ||
                    request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '') ||
@@ -74,7 +81,7 @@ export default {
     if (!rl.ok && pathname !== '/health' && pathname !== '/status' && pathname !== '') {
       return new Response(JSON.stringify({
         ok: false,
-        error: 'Limite de requisições excedido. Máximo permitido: 1 req/segundo (60 req/min = 86.400 req/dia máx). Para vazão ilimitada, utilize sua chave x-api-key Pro.',
+        error: 'Limite temporário de requisições excedido. Aguarde o período indicado em Retry-After.',
         retryAfterSeconds: Math.ceil((rl.resetAt - Date.now()) / 1000)
       }, null, 2), {
         status: 429,
@@ -118,7 +125,8 @@ export default {
           service: 'ValidadorMail Pro API',
           cluster: 'Cloudflare Edge Anycast',
           rotas: {
-            validar: 'GET /api/validar-email?email=... ou POST /api/validar-email'
+            validar: 'GET /api/validar-email?email=... ou POST /api/validar-email',
+            lote: 'POST /api/email/lote (até 50 e-mails Pro ou 5 gratuitos)'
           },
           github: 'https://github.com/clepta2/validadormail-pro'
         }, null, 2), {
@@ -132,15 +140,67 @@ export default {
       });
     }
 
+    // Validação em Lote de E-mails (POST /api/email/lote ou /api/validar-email/lote)
+    if (pathname === '/api/email/lote' || pathname === '/api/validar-email/lote') {
+      if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ ok: false, error: 'Use POST com um array "emails".' }), {
+          status: 405,
+          headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS }
+        });
+      }
+
+      const lista = bodyJson && Array.isArray(bodyJson.emails) ? bodyJson.emails : null;
+      if (!lista || lista.length === 0) {
+        return new Response(JSON.stringify({ ok: false, error: 'Envie um array não vazio "emails" no corpo JSON.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS }
+        });
+      }
+
+      const maxItems = isPro ? 50 : 5;
+      if (lista.length > maxItems) {
+        return new Response(JSON.stringify({
+          ok: false,
+          error: `O lote aceita até ${maxItems} e-mails por requisição neste plano.`,
+          maxItems
+        }), {
+          status: 413,
+          headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS }
+        });
+      }
+
+      const resultados = [];
+      for (let i = 0; i < lista.length; i += 5) {
+        const chunk = lista.slice(i, i + 5);
+        const resolved = await Promise.all(chunk.map(async (item) => {
+          const res = await ValidadorMailPro.validarCompleto(String(item || ''));
+          return {
+            emailInformado: String(item),
+            ok: res.valido,
+            ...res
+          };
+        }));
+        resultados.push(...resolved);
+      }
+
+      return new Response(JSON.stringify({
+        ok: true,
+        totalSolicitado: lista.length,
+        totalValidos: resultados.filter((item) => item.valido).length,
+        totalInvalidos: resultados.filter((item) => !item.valido).length,
+        resultados
+      }, null, 2), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS }
+      });
+    }
+
     // 6. Rota Principal de Validação de E-mail
     if (pathname === '/api/validar-email' || pathname === '/api/email/validar' || pathname === '/api/validar' || pathname === '/api/email') {
       let emailInput = url.searchParams.get('email') || url.searchParams.get('valor') || '';
 
-      if (!emailInput && request.method === 'POST') {
-        try {
-          const body = await request.json();
-          emailInput = body.email || body.valor || '';
-        } catch (_) {}
+      if (!emailInput && bodyJson) {
+        emailInput = bodyJson.email || bodyJson.valor || '';
       }
 
       if (!emailInput) {
