@@ -73,7 +73,16 @@ export default {
                    request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '') ||
                    url.searchParams.get('api_key') ||
                    url.searchParams.get('key') || '';
-    const isPro = String(apiKey).trim().length >= 16;
+    const cleanKey = String(apiKey).trim();
+    const isPro = Boolean(
+      cleanKey && (
+        cleanKey.startsWith('mail_live_') || 
+        cleanKey.startsWith('mail_pro_') || 
+        cleanKey.startsWith('mail_master_') || 
+        cleanKey.startsWith('pnt_live_') ||
+        (env && (env.API_KEY === cleanKey || env.PRO_KEY === cleanKey))
+      ) && cleanKey.length >= 16
+    );
     const clientIp = request.headers.get('CF-Connecting-IP') || request.headers.get('x-real-ip') || '127.0.0.1';
     const maxReqs = isPro ? 300 : 60;
     const rl = checkRateLimit(isPro ? apiKey : clientIp, maxReqs, 60000);
@@ -141,7 +150,7 @@ export default {
     }
 
     // Validação em Lote de E-mails (POST /api/email/lote ou /api/validar-email/lote)
-    if (pathname === '/api/email/lote' || pathname === '/api/validar-email/lote') {
+    if (pathname === '/api/email/lote' || pathname === '/api/validar-email/lote' || pathname === '/api/validar-lote') {
       if (request.method !== 'POST') {
         return new Response(JSON.stringify({ ok: false, error: 'Use POST com um array "emails".' }), {
           status: 405,
